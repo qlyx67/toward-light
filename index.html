@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#18231d">
+  <meta name="description" content="向光而行 · 我的求是新程。以九组浙江大学校园原创摄影与 AI 创作对照，记录一名新生眼中的校园。">
+  <title>向光而行｜我的求是新程</title>
+  <link rel="stylesheet" href="gallery.css">
+  <script src="works.js" defer></script>
+  <script src="gallery.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到作品</a>
+  <header class="masthead" id="top">
+    <div class="masthead-inner">
+      <a class="wordmark" href="#top">向光而行<span>校园影像志</span></a>
+      <nav aria-label="展览导航">
+        <a href="#exhibit">作品</a>
+        <a href="#extras">拾遗</a>
+        <a href="#process">创作说明</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="title">
+      <img class="hero-photo" src="assets/01-bridge-art.webp" alt="校园桥上，背着书包的骑行者沿着夕照向前" width="1849" height="851" fetchpriority="high">
+      <div class="hero-shade"></div>
+      <div class="hero-copy wrap">
+        <p class="eyebrow">浙江大学 <span>·</span> 素养课程传播实践</p>
+        <h1 id="title">向光而行</h1>
+        <p class="hero-subtitle">我的求是新程</p>
+        <a class="hero-link" href="#exhibit">开始观看 <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="hero-credit">校园桥景 · AI 创作版</p>
+    </section>
+
+    <section class="intro wrap" id="exhibit" aria-labelledby="intro-title">
+      <div>
+        <p class="eyebrow">展览前言</p>
+        <h2 id="intro-title">从熟悉一条路开始</h2>
+      </div>
+      <div class="intro-body">
+        <p>来到浙大以后，我用相机记下每天经过的地方。傍晚过桥的人、湖上试着站稳的身影，还有走廊里逐渐移到地面的阳光。这些是我认识校园的起点。</p>
+        <p>选片时，我借助 AI 尝试了不同的光影处理，再把它们和原片摆在一起。保留两种版本，也让每一次创作选择有迹可循。</p>
+        <p class="theme">参评主题 · 启航求是新程，谱写青春之声</p>
+      </div>
+    </section>
+
+    <nav class="chapter-nav" aria-label="五章作品">
+      <div class="wrap chapter-links">
+        <a href="#start"><span aria-hidden="true">01</span> 启程</a>
+        <a href="#together"><span aria-hidden="true">02</span> 同行</a>
+        <a href="#explore"><span aria-hidden="true">03</span> 探索</a>
+        <a href="#reflect"><span aria-hidden="true">04</span> 沉淀</a>
+        <a href="#create"><span aria-hidden="true">05</span> 创造</a>
+      </div>
+    </nav>
+    <div id="chapters" class="wrap works"></div>
+
+    <section id="extras" class="wrap extras" aria-labelledby="extras-title">
+      <div class="section-heading">
+        <h2 id="extras-title">光影拾遗</h2>
+        <p>水岸、树影与宿舍窗边。</p>
+      </div>
+      <div id="extra-works" class="extra-works"></div>
+    </section>
+
+    <section id="process" class="process" aria-labelledby="process-title">
+      <div class="wrap process-inner">
+        <h2 id="process-title">从快门到作品</h2>
+        <div class="process-copy">
+          <h3>为什么留下这九组</h3>
+          <p>相近的桥景里，我选了前景骑行者最清楚的一张。林荫路保留校园里人与人擦肩而过的节奏，桨板带进了具体的行动，长椅和走廊则让观看慢下来。四组拾遗补上水面、步道、宿舍和叶间的细节。</p>
+          <h3>AI 使用说明</h3>
+          <dl class="disclosure">
+            <div><dt>使用工具</dt><dd>ChatGPT 图像生成与编辑功能，以及文案和网页代码辅助。</dd></div>
+            <div><dt>使用场景</dt><dd>在原创摄影基础上尝试光影、色彩和局部元素调整，并辅助选片、作品解读和网页制作。具体改动见各组的处理记录或大图说明。</dd></div>
+            <div><dt>生成内容比例</dt><dd>9/9 张创作版经过生成式编辑，9 张对应原片由作者拍摄。比例按图像数量计算，生成像素的比例无法可靠计量。</dd></div>
+            <div><dt>人工参与</dt><dd>作者拍摄原片，提供视觉参考并提出修改意见。生成式编辑可能改写部分人物、车辆和背景纹理，原片供对照查看。</dd></div>
+          </dl>
+          <p class="note">本展为学生课程创作。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap footer">
+    <div><strong>向光而行</strong><p>摄影 / qlyxx</p></div>
+    <a href="#top">回到开头 ↑</a>
+  </footer>
+  <dialog id="viewer" aria-labelledby="viewer-title">
+    <div class="viewer-header">
+      <h2 id="viewer-title"></h2>
+      <div class="viewer-navigation">
+        <button id="previous" type="button" aria-label="上一组照片">←</button>
+        <button id="next" type="button" aria-label="下一组照片">→</button>
+        <button id="close" type="button" aria-label="关闭大图">×</button>
+      </div>
+    </div>
+    <div id="viewer-tools" class="viewer-tools"></div>
+    <div id="viewer-content" class="viewer-content"></div>
+    <p id="viewer-note" class="viewer-note"></p>
+  </dialog>
+</body>
+</html>
