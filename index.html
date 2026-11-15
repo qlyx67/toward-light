@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#18231d">
   <meta name="description" content="向光而行 · 我的求是新程。以九组浙江大学校园原创摄影与 AI 创作对照，记录一名新生眼中的校园。">
   <title>向光而行｜我的求是新程</title>
-  <link rel="stylesheet" href="gallery.css">
-  <script src="works.js" defer></script>
-  <script src="gallery.js" defer></script>
+  <link rel="stylesheet" href="gallery.css?v=3">
+  <script src="works.js?v=3" defer></script>
+  <script src="gallery.js?v=3" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">跳到作品</a>
@@ -24,25 +24,25 @@
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="title">
-      <img class="hero-photo" src="assets/01-bridge-art.webp" alt="校园桥上，背着书包的骑行者沿着夕照向前" width="1849" height="851" fetchpriority="high">
+      <img class="hero-photo" src="assets/01-bridge-large.webp" srcset="assets/01-bridge-v2.webp 1600w, assets/01-bridge-large.webp 3840w" sizes="(max-width: 760px) 210vh, 100vw" alt="校园桥上，背着书包的骑行者沿着夕照向前" width="3840" height="1767" fetchpriority="high">
       <div class="hero-shade"></div>
       <div class="hero-copy wrap">
-        <p class="eyebrow">浙江大学 <span>·</span> 素养课程传播实践</p>
-        <h1 id="title">向光而行</h1>
-        <p class="hero-subtitle">我的求是新程</p>
+        <p class="eyebrow">A CAMPUS JOURNAL / ZHEJIANG UNIVERSITY</p>
+        <h1 id="title">向光<br>而行<span class="title-dot">.</span></h1>
+        <p class="hero-subtitle">我的求是新程 <span class="edition">PHOTOGRAPHS BY QLYXX · 2026</span></p>
         <a class="hero-link" href="#exhibit">开始观看 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="hero-credit">校园桥景 · AI 创作版</p>
+      <p class="hero-credit">01 / 09 — 校园摄影 · AI 调整版</p>
     </section>
 
     <section class="intro wrap" id="exhibit" aria-labelledby="intro-title">
       <div>
         <p class="eyebrow">展览前言</p>
-        <h2 id="intro-title">从熟悉一条路开始</h2>
+        <h2 id="intro-title">我想把这些光，<br>留下来。</h2>
       </div>
       <div class="intro-body">
-        <p>来到浙大以后，我用相机记下每天经过的地方。傍晚过桥的人、湖上试着站稳的身影，还有走廊里逐渐移到地面的阳光。这些是我认识校园的起点。</p>
-        <p>选片时，我借助 AI 尝试了不同的光影处理，再把它们和原片摆在一起。保留两种版本，也让每一次创作选择有迹可循。</p>
+        <p>我很喜欢摄影，也很看重光线。同一个地方，在不同的光线下，给人的感觉可以完全不一样。来到浙大以后，我拍下了一些让我想停下来看的瞬间。</p>
+        <p>桥上的同学、树下的长椅、宿舍旁的夕阳。这九张照片，记录的是我眼里的校园，也是我开始认识大学生活的方式。我把它们整理成一个可以分享的影像展，希望别人也能看见这些日常里的美好。</p>
         <p class="theme">参评主题 · 启航求是新程，谱写青春之声</p>
       </div>
     </section>
@@ -57,6 +57,7 @@
       </div>
     </nav>
     <div id="chapters" class="wrap works"></div>
+    <noscript><p class="wrap">请开启 JavaScript 查看九组作品与原片对照。</p></noscript>
 
     <section id="extras" class="wrap extras" aria-labelledby="extras-title">
       <div class="section-heading">
@@ -70,16 +71,19 @@
       <div class="wrap process-inner">
         <h2 id="process-title">从快门到作品</h2>
         <div class="process-copy">
-          <h3>为什么留下这九组</h3>
-          <p>相近的桥景里，我选了前景骑行者最清楚的一张。林荫路保留校园里人与人擦肩而过的节奏，桨板带进了具体的行动，长椅和走廊则让观看慢下来。四组拾遗补上水面、步道、宿舍和叶间的细节。</p>
-          <h3>AI 使用说明</h3>
+          <p class="author-statement">从拍下校园里的第一束光，到确定照片的影调与网页的呈现方式，我希望这组作品能保留自己看见校园时的感受。</p>
+          <h3>创作构思</h3>
+          <p>我以“向光而行”为线索，从自己拍摄的校园照片中选取作品，用“启程、同行、探索、沉淀、创造”串起初入大学的感受。照片保留浓郁的光影，同时让暗部细节更清楚；网页则用深色背景、错落的大图和留白，让观看的节奏跟着照片展开。</p>
+          <details class="method"><summary>创作记录与 AI 使用说明 <span>＋</span></summary>
           <dl class="disclosure">
-            <div><dt>使用工具</dt><dd>ChatGPT 图像生成与编辑功能，以及文案和网页代码辅助。</dd></div>
-            <div><dt>使用场景</dt><dd>在原创摄影基础上尝试光影、色彩和局部元素调整，并辅助选片、作品解读和网页制作。具体改动见各组的处理记录或大图说明。</dd></div>
-            <div><dt>生成内容比例</dt><dd>9/9 张创作版经过生成式编辑，9 张对应原片由作者拍摄。比例按图像数量计算，生成像素的比例无法可靠计量。</dd></div>
-            <div><dt>人工参与</dt><dd>作者拍摄原片，提供视觉参考并提出修改意见。生成式编辑可能改写部分人物、车辆和背景纹理，原片供对照查看。</dd></div>
+            <div><dt>使用工具</dt><dd>ChatGPT。</dd></div>
+            <div><dt>使用场景</dt><dd>在原创摄影基础上调整光影、色彩和局部元素，完成网页制作。</dd></div>
+            <div><dt>生成内容</dt><dd>每张展示图均使用 AI 调整，网页中可查看对应原片。网页在作者指导下由 AI 辅助生成。</dd></div>
+            <div><dt>作者参与</dt><dd>原片由作者独立拍摄，拍摄思路、取景与构图、主题构思和作品选择均由作者完成。作者确定照片的色调、光影方向与调整风格，提供参考并逐轮提出修改意见。网页的整体思路、配色、排版、作品解读以及各处展示与交互细节，也由作者提出要求并指导修改，AI 依据这些要求辅助实现。</dd></div>
+            <div><dt>图片尺寸</dt><dd>调整版提供长边 3840 像素的放大文件，非原生 4K 细节；原片保留上传尺寸。</dd></div>
           </dl>
-          <p class="note">本展为学生课程创作。</p>
+          </details>
+          <p class="note">浙江大学 · 素养课程传播实践 / 启航求是新程，谱写青春之声</p>
         </div>
       </div>
     </section>
@@ -90,7 +94,7 @@
   </footer>
   <dialog id="viewer" aria-labelledby="viewer-title">
     <div class="viewer-header">
-      <h2 id="viewer-title"></h2>
+      <div><p id="viewer-count" class="viewer-count" aria-live="polite"></p><h2 id="viewer-title"></h2></div>
       <div class="viewer-navigation">
         <button id="previous" type="button" aria-label="上一组照片">←</button>
         <button id="next" type="button" aria-label="下一组照片">→</button>
@@ -98,6 +102,7 @@
       </div>
     </div>
     <div id="viewer-tools" class="viewer-tools"></div>
+    <p class="viewer-hint">点击照片放大 · 左右滑动或使用方向键切换 · Esc 关闭</p>
     <div id="viewer-content" class="viewer-content"></div>
     <p id="viewer-note" class="viewer-note"></p>
   </dialog>
