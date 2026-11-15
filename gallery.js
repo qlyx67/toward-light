@@ -3,6 +3,7 @@ const viewerTitle = document.querySelector("#viewer-title");
 const viewerTools = document.querySelector("#viewer-tools");
 const viewerContent = document.querySelector("#viewer-content");
 const viewerNote = document.querySelector("#viewer-note");
+const compareSwitch = document.querySelector(".compare-switch");
 const previous = document.querySelector("#previous");
 const next = document.querySelector("#next");
 const closeViewer = document.querySelector("#close");
@@ -17,14 +18,16 @@ function photoSource(work, view) {
   return "assets/" + work.id + (view === "art" ? "-v2" : "-original") + ".webp";
 }
 
-function setPhoto(image, work, view) {
-  const [width, height] = work.dimensions[view === "original" ? 0 : 1];
+function setPhoto(image, work, view, { sizes, fullSize = false } = {}) {
+  const [width, height] = fullSize ? work.largeDimensions : work.dimensions[view === "original" ? 0 : 1];
   image.width = width;
   image.height = height;
   image.alt = work.alt + "（" + viewNames[view] + "）";
-  image.src = photoSource(work, view);
-  image.srcset = view === "art" ? `assets/${work.id}-v2.webp ${work.dimensions[1][0]}w, assets/${work.id}-large.webp ${work.largeDimensions[0]}w` : "";
-  image.sizes = "(max-width: 760px) 89vw, 80vw";
+  image.sizes = sizes ?? "";
+  image.srcset = view === "art" && sizes
+    ? `assets/${work.id}-v2.webp ${width}w, assets/${work.id}-large.webp ${work.largeDimensions[0]}w`
+    : "";
+  image.src = fullSize ? `assets/${work.id}-large.webp` : photoSource(work, view);
 }
 
 function createButton(label, className, action) {
@@ -36,9 +39,9 @@ function createButton(label, className, action) {
   return button;
 }
 
-function createViewButtons(onSelect) {
-  return Object.entries(viewNames).map(([view, label]) => {
-    const button = createButton(label, "view-button", () => onSelect(view));
+function createViewButtons(onSelect, views = ["art", "original"]) {
+  return views.map(view => {
+    const button = createButton(viewNames[view], "view-button", () => onSelect(view));
     button.dataset.view = view;
     return button;
   });
@@ -84,11 +87,11 @@ function mountWork(work, index) {
   tools.setAttribute("aria-label", work.title + "的版本");
   const update = view => {
     selectedViews[index] = view;
-    setPhoto(image, work, view);
+    setPhoto(image, work, view, { sizes: `(max-width: 760px) 89vw, ${extra ? "42vw" : "80vw"}` });
     selectButton(tools, view);
   };
   tools.append(...createViewButtons(update));
-  const compare = createButton("并排对照", "compare-button", () => openViewer(index, "compare", compare));
+  const compare = createButton("原片对照", "compare-button", () => openViewer(index, "compare", compare));
   tools.append(compare);
   figure.append(picture, tools);
   update(selectedViews[index]);
@@ -102,44 +105,72 @@ function mountWork(work, index) {
   document.querySelector(extra ? "#extra-works" : "#chapters").append(article);
 }
 
+function setCompareView(view) {
+  viewerContent.dataset.compareView = view;
+  selectButton(compareSwitch, view);
+  setDownload(works[currentIndex], view);
+}
+
+function setDownload(work, view) {
+  const original = view === "original";
+  download.href = `assets/${work.id}-${original ? "original" : "large"}.webp`;
+  download.download = `${work.id}-${original ? "original" : "3840"}.webp`;
+  download.textContent = original ? "下载原片 ↓" : "下载 3840px 调整版 ↓";
+}
+
+function createViewerPhoto(work, view, comparison) {
+  const figure = document.createElement("figure");
+  const image = document.createElement("img");
+  const label = document.createElement("figcaption");
+  figure.dataset.version = view;
+  label.textContent = viewNames[view];
+  image.decoding = "async";
+  setPhoto(image, work, view, { fullSize: !comparison && view === "art" });
+
+  if (comparison) {
+    image.decode?.().catch(() => {});
+  } else {
+    image.tabIndex = 0;
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-label", `${viewNames[view]}：点击放大，再次点击还原`);
+    image.setAttribute("aria-pressed", "false");
+    const toggleZoom = () => {
+      const zoomed = image.classList.toggle("is-zoomed");
+      image.setAttribute("aria-pressed", String(zoomed));
+      viewerContent.classList.toggle("zoomed", zoomed);
+      if (!zoomed) viewerContent.scrollTo(0, 0);
+    };
+    image.addEventListener("click", toggleZoom);
+    image.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggleZoom();
+    });
+  }
+
+  figure.append(image, label);
+  return figure;
+}
+
 function setViewerMode(value) {
   viewerMode = value;
   const work = works[currentIndex];
+  const comparison = value === "compare";
+  viewer.dataset.mode = value;
   selectButton(viewerTools, value);
-  viewerContent.classList.toggle("compare", value === "compare");
-  viewerContent.classList.remove('zoomed');
-  viewerContent.scrollTo(0, 0);
-  const download = document.querySelector('#download-photo');
-  if (download) {
-    const original = value === 'original';
-    download.href = `assets/${work.id}-${original ? 'original' : 'large'}.webp`;
-    download.download = `${work.id}-${original ? 'original' : '3840'}.webp`;
-    download.textContent = original ? '下载原片 ↓' : '下载 3840px 调整版 ↓';
+  viewerContent.classList.toggle("compare", comparison);
+  viewerContent.classList.remove("zoomed");
+
+  if (comparison) {
+    const [width, height] = work.dimensions[1];
+    viewerContent.style.setProperty("--photo-ratio", `${width} / ${height}`);
+    setCompareView("art");
+  } else {
+    setDownload(work, value);
   }
-  const views = value === "compare" ? ["original", "art"] : [value];
-  viewerContent.replaceChildren(...views.map(view => {
-    const figure = document.createElement("figure");
-    const image = document.createElement("img");
-    const label = document.createElement("figcaption");
-    label.textContent = viewNames[view];
-    setPhoto(image, work, view);
-    if(view === "art") { image.src = `assets/${work.id}-large.webp`; image.removeAttribute("srcset"); }
-    image.tabIndex = 0;
-    image.setAttribute('role', 'button');
-    image.setAttribute('aria-label', `${viewNames[view]}：点击放大，再次点击还原`);
-    image.setAttribute('aria-pressed', 'false');
-    const toggleZoom = () => {
-      const zoomed = image.classList.toggle('is-zoomed');
-      image.setAttribute('aria-pressed', String(zoomed));
-      viewerContent.classList.toggle('zoomed', !!viewerContent.querySelector('.is-zoomed'));
-    };
-    image.addEventListener('click', toggleZoom);
-    image.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleZoom(); }
-    });
-    figure.append(image, label);
-    return figure;
-  }));
+  const views = comparison ? ["original", "art"] : [value];
+  viewerContent.replaceChildren(...views.map(view => createViewerPhoto(work, view, comparison)));
+  viewerContent.scrollTo(0, 0);
 }
 
 function updateViewer() {
@@ -147,10 +178,6 @@ function updateViewer() {
   viewerTitle.textContent = work.title;
   viewerCount.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
   viewerNote.textContent = work.edit;
-  const oldDownload = document.querySelector("#download-photo");
-  if(oldDownload) oldDownload.remove();
-  const download = document.createElement("a");
-  download.id = "download-photo"; download.className = "download"; download.href = `assets/${work.id}-large.webp`; download.download = `${work.id}-3840.webp`; download.textContent = "下载 3840px 放大版 ↗"; viewerTools.append(download);
   previous.disabled = currentIndex === 0;
   next.disabled = currentIndex === works.length - 1;
   setViewerMode(viewerMode);
@@ -173,10 +200,19 @@ function navigateViewer(direction) {
   updateViewer();
 }
 
-viewerTools.append(...createViewButtons(setViewerMode));
-const viewerCompare = createButton("并排对照", "view-button", () => setViewerMode("compare"));
+compareSwitch.append(...createViewButtons(setCompareView, ["original", "art"]));
+const download = document.createElement("a");
+download.className = "download";
+const viewerCompare = createButton("对照", "view-button", () => {
+  setViewerMode("compare");
+  if (compareSwitch.offsetHeight) compareSwitch.querySelector("[aria-pressed=true]").focus();
+});
 viewerCompare.dataset.view = "compare";
-viewerTools.append(viewerCompare);
+const openSingle = createButton("查看大图", "view-button compare-open-single", () => {
+  setViewerMode(viewerContent.dataset.compareView);
+  viewerTools.querySelector("[aria-pressed=true]").focus();
+});
+viewerTools.append(...createViewButtons(setViewerMode), viewerCompare, openSingle, download);
 previous.addEventListener("click", () => navigateViewer(-1));
 next.addEventListener("click", () => navigateViewer(1));
 closeViewer.addEventListener("click", () => viewer.close());
