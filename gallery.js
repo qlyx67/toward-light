@@ -212,14 +212,70 @@ viewerContent.addEventListener('touchend', event => {
 viewerContent.addEventListener('touchcancel', () => { swipeStart = null; }, { passive: true });
 
 works.forEach(mountWork);
-const chapterLinks = [...document.querySelectorAll(".chapter-links a")];
-const chapterObserver = new IntersectionObserver(entries => {
-  for (const entry of entries) {
-    if (!entry.isIntersecting) continue;
-    for (const link of chapterLinks) {
-      if (link.hash === "#" + entry.target.id) link.setAttribute("aria-current", "location");
-      else link.removeAttribute("aria-current");
+
+function startScrollReveals() {
+  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (motion.matches || !("IntersectionObserver" in window)) return;
+
+  const targets = document.querySelectorAll([
+    ".intro > div", ".work-heading", ".work-photo", ".work-description",
+    ".section-heading", ".extra-text", ".process h2", ".author-statement"
+  ].join(", "));
+  const reveal = new IntersectionObserver(entries => {
+    for (const { target, isIntersecting } of entries) {
+      if (!isIntersecting) continue;
+      target.classList.remove("awaiting-entry");
+      reveal.unobserve(target);
     }
+  }, { rootMargin: "0px 0px -5% 0px" });
+
+  for (const target of targets) {
+    if (target.getBoundingClientRect().top < window.innerHeight) continue;
+    target.classList.add("awaiting-entry");
+    reveal.observe(target);
   }
-}, { rootMargin: "-24% 0px -56%" });
-for (const chapter of document.querySelectorAll(".work")) chapterObserver.observe(chapter);
+
+  motion.addEventListener("change", ({ matches }) => {
+    if (!matches) return;
+    reveal.disconnect();
+    for (const target of targets) target.classList.remove("awaiting-entry");
+  });
+}
+
+function trackChapters() {
+  const nav = document.querySelector(".chapter-nav");
+  const progress = nav.querySelector(".chapter-progress");
+  const links = [...nav.querySelectorAll("a")];
+  const chapters = links.map(link => document.getElementById(link.hash.slice(1)));
+  let activeIndex = -1;
+  let pendingFrame;
+
+  function update() {
+    pendingFrame = undefined;
+    const marker = nav.offsetHeight + Math.min(100, window.innerHeight * .18);
+    const bounds = chapters.map(chapter => chapter.getBoundingClientRect());
+    const start = bounds[0].top;
+    const end = bounds.at(-1).bottom;
+    const fraction = Math.max(0, Math.min(1, (marker - start) / (end - start)));
+    const index = end > nav.offsetHeight ? bounds.findLastIndex(chapter => chapter.top <= marker) : -1;
+
+    progress.style.setProperty("--chapter-progress", fraction);
+    if (index === activeIndex) return;
+    links[activeIndex]?.removeAttribute("aria-current");
+    links[index]?.setAttribute("aria-current", "location");
+    activeIndex = index;
+  }
+
+  function scheduleUpdate() {
+    pendingFrame ??= requestAnimationFrame(update);
+  }
+
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("resize", scheduleUpdate);
+  window.addEventListener("pageshow", scheduleUpdate);
+  new ResizeObserver(scheduleUpdate).observe(document.querySelector(".chapter-gallery"));
+  update();
+}
+
+startScrollReveals();
+trackChapters();
